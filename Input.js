@@ -32,5 +32,13 @@ Input.OnMouseDown = function(e){
 Input.OnMouseUp = function(e){
 	this.mouseDown = false;
 
-	Buttons.ProcessDrag();
+	// Process drags/clicks
+	//
+	var distTravelled = Utils.Distance(this.mouseX, this.mouseY, this.dragStartX, this.dragStartY);
+	if(distTravelled > 10){
+		Buttons.ProcessDrag();
+	} else if (distTravelled < 6){
+		Buttons.ProcessClick();
+	}
+
 }

@@ -12,25 +12,31 @@ Objects.Add = function(o){
 	this.ToAdd.push(o);
 }
 
-// Objects.Destroy = function(o){
-// 	this.ToRemove.push(o);
-// }
+Objects.Destroy = function(o){
+	this.ToRemove.push(o);
+}
 
 Objects.ProcessLists = function(){
 	for(var i = 0; i < this.ToAdd.length; i++){
-		this.List.push(this.ToAdd[i]);
+		var o = this.ToAdd[i];
+		this.List.push(o);
 	}
 
 	this.ToAdd = [];
 	
-	// for(var i = this.ToRemove.length; i >= 0; i--){
-	// 	var o = this.ToRemove[i];
+	for(var i = 0; i < this.ToRemove.length; i++){
+		var objectToRemove = this.ToRemove[i];
 
-	// 	for(var i = 0; i < this.List; i++){
+		for(var i = 0; i < this.List.length; i++){
+			var o = this.List[i];
+			if (o == objectToRemove){
+				this.List.splice(i, 1);
+				break;
+			}
+		}
+	}
 
-	// 	}
-
-	// }
+	this.ToRemove = [];
 }
 
 Objects.Update = function(){

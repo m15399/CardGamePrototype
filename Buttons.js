@@ -2,26 +2,70 @@
 var Buttons = {};
 
 Buttons.Init = function(){
+	this.highlightedButtons = [];
+	this.buttons = [];
+}
 
+Buttons.Add = function(button){
+
+	// Expects button to have fields: x, y (centered), buttonWidth, buttonHeight
+
+	this.buttons.push(button);
 }
 
 Buttons.FindButtons = function(x, y){
-	var buttons = [];
+	var result = [];
 
-	for(var i = 0; i < Objects.List.length; i++){
-		var o = Objects.List[i];
-
-		if(!o.hasOwnProperty('buttonWidth'))
-			continue;
+	for(var i = 0; i < this.buttons.length; i++){
+		var o = this.buttons[i];
 
 		var w = o.buttonWidth;
 		var h = o.buttonHeight;
-		if(PointInRect(x, y, o.x - w/2, o.y - h/2, w, h)){
-			buttons.push(o);
+		if(Utils.PointInRect(x, y, o.x - w/2, o.y - h/2, w, h)){
+			result.push(o);
 		}
 	}
 
-	return buttons;
+	return result;
+}
+
+Buttons.Clear = function(){
+	this.buttons = [];
+}
+
+Buttons.Update = function(){
+	var mx = Input.mouseX;
+	var my = Input.mouseY;
+
+	this.highlightedButtons = this.FindButtons(mx, my);
+
+	for(var i = 0; i < this.highlightedButtons.length; i++){
+		var b = this.highlightedButtons[i];
+		if(b.OnHover)
+			b.OnHover();
+	}
+}
+
+Buttons.Draw = function(g){
+
+	g.strokeStyle = '#ffc';
+	g.lineWidth = 1.5;
+	for(var i = 0; i < this.highlightedButtons.length; i++){
+		var b = this.highlightedButtons[i];
+		StrokeRect(g, b.x, b.y, b.buttonWidth, b.buttonHeight);
+	}
+	g.lineWidth = 1;
+}
+
+Buttons.ProcessClick = function(){
+	var buttons = this.FindButtons(Input.mouseX, Input.mouseY);
+
+	if(buttons.length > 0){
+		var b = buttons[0];
+
+		if(b.OnClick)
+			b.OnClick();
+	}
 }
 
 Buttons.ProcessDrag = function(){
@@ -33,22 +77,8 @@ Buttons.ProcessDrag = function(){
 		var b2 = endButtons[0];
 
 		if(b1 != b2){
-
-			var blink = false;
-
-			if(b1.buttonType == Creature){
-				if(b2.buttonType == Creature){
-					b1.Fight(b2);
-					blink = true;
-				}
-			}
-
-			if(blink){
-				var bt = .05;
-
-				b1._blinkTime = bt;
-				b2._blinkTime = bt;				
-			}
+			if(b1.OnDragTo)
+				b1.OnDragTo(b2);
 		}
 	}
 }

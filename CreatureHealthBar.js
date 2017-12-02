@@ -23,10 +23,8 @@ CreatureHealthBar.Draw = function(g){
 	StrokeRect(g, x, y, w, h);
 
 	g.fillStyle = 'white';
-	g.font = '14px Arial';
-	g.textAlign = 'center';
-	g.textBaseline = 'middle';
-
+	Utils.Font(g, 14);
+	
 	var attack = this.creature.attack;
 	var health = this.creature.health;
 	g.fillText(attack + ' / ' + health, x, y);

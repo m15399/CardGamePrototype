@@ -4,10 +4,14 @@ var Game = {};
 Game.Init = function(){
 	Objects.Init();
 	Time.Init();
+	Buttons.Init();
 	Input.Init();
 
 	this.prevTime = GetTime();
 	this.time = GetTime();
+
+
+	Create(EndTurnButton);
 
 	var c1 = Create(Creature);
 	c1.y -= 100;
@@ -36,7 +40,11 @@ Game.Loop = function(){
 }
 
 Game.Update = function(){
+	Buttons.Clear();
+
 	Objects.Update();
+	
+	Buttons.Update();
 }
 
 Game.Draw = function(g){
@@ -48,8 +56,18 @@ Game.Draw = function(g){
 
 	g.strokeWidth = 1;
 
+	// Transform canvas to middle
+	g.save();
+	var dx = (cw - pw) / 2;
+	var dy = (ch - ph) / 2;
+	g.translate(dx, dy);
+
+
 	Objects.Draw(g);
 
+	Buttons.Draw(g);
+
+	// Drag line
 	if(Input.mouseDown){
 		g.lineWidth = 3;
 		g.strokeStyle = '#ae5a';
@@ -73,4 +91,5 @@ Game.Draw = function(g){
 	g.strokeStyle = 'white';
 	g.strokeRect(0, 0, pw - 1, ph - 1);
 
+	g.restore();
 }
